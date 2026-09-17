@@ -1,0 +1,36 @@
+{
+  "name": "law-office-system",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3999",
+    "build": "next build",
+    "start": "next start -p 3999",
+    "lint": "next lint",
+    "seed": "node scripts/seed-admin.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/"
+  },
+  "dependencies": {
+    "@gradio/client": "^2.6.0",
+    "bcryptjs": "^3.0.3",
+    "jose": "^6.2.12",
+    "jsonwebtoken": "^9.0.3",
+    "mammoth": "^1.12.3",
+    "mongodb": "^7.6.0",
+    "next": "^14.2.0",
+    "pdf-parse": "^2.4.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "word-extractor": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.2.0",
+    "typescript": "^5.0.0"
+  }
+}
