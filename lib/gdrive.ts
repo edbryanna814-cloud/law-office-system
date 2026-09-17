@@ -1,8 +1,8 @@
 // رفع الملفات على Google Drive بدل الهارد — عبر service account (jose جاهز للتوقيع).
 import { SignJWT, importPKCS8 } from "jose";
 
-const SCOPES = "https://www.googleapis.com/auth/drive.file";
-const TOKEN_URL = "https://oauth2.googleapis.com/token";
+const SCOPES = "";
+const TOKEN_URL = "";
 
 // ponytail: token cache global — تكفي سكوب واحد؛ لو تشغّل كذا instance غيّرها لـ shared cache.
 let cached: { token: string; exp: number } | null = null;
