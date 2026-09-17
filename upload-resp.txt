@@ -1,1 +1,0 @@
-{"docs":[{"id":"DOC-1823","n":"sample.pdf","s":"1 KB","k":"pdf","c":"2024/118","file":"DOC-1823.pdf","tex":null,"by":"???? ????","created":"2026-09-15T14:15:26.389Z","_id":"6aa952feca0fc4362fefc0cd"}]}
