@@ -65,7 +65,7 @@ export function AppShell() {
   });
 
   // modals: "off" | "new" | edit-target
-  const [modal, setModal] = useState<{ kind: "case" | "session" | "employee"; edit?: any } | null>(null);
+  const [modal, setModal] = useState<{ kind: "case" | "session" | "employee"; edit?: any; archived?: boolean } | null>(null);
   const [texDoc, setTexDoc] = useState<DocumentData | null>(null);
 
   useEffect(() => {
@@ -289,7 +289,7 @@ export function AppShell() {
       onDelete={deleteCase}
     />
   ) : cur === "archive" ? (
-    <ArchiveTab list={state.cases} onOpen={setOpenCase} onRestore={archiveCase} onDelete={deleteCase} />
+    <ArchiveTab list={state.cases} onOpen={setOpenCase} onRestore={archiveCase} onDelete={deleteCase} onAdd={() => setModal({ kind: "case", archived: true })} />
   ) : cur === "sessions" ? (
     <SessionsTab
       list={state.sessions}
@@ -340,7 +340,7 @@ export function AppShell() {
         <main className="content">{body}</main>
       </div>
       {modal?.kind === "case" && (
-        <AddCaseModal edit={modal.edit as CaseData | undefined} onClose={() => setModal(null)} onSave={modal.edit ? editCase : addCase} />
+        <AddCaseModal edit={modal.edit as CaseData | undefined} startArchived={modal.archived} onClose={() => setModal(null)} onSave={modal.edit ? editCase : addCase} />
       )}
       {modal?.kind === "session" && (
         <AddSessionModal

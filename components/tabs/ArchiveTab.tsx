@@ -12,11 +12,13 @@ export function ArchiveTab({
   onOpen,
   onRestore,
   onDelete,
+  onAdd,
 }: {
   list: CaseData[];
   onOpen: (c: CaseData) => void;
   onRestore: (c: CaseData) => void;
   onDelete: (id: string) => void;
+  onAdd: () => void;
 }) {
   const [q, setQ] = useState("");
   const archived = list.filter((c) => c.archived && (c.title + c.client + c.id).includes(q));
@@ -32,6 +34,9 @@ export function ArchiveTab({
           <Ico d={I.search} size={16} />
           <input placeholder="ابحث في الأرشيف" value={q} onChange={(e) => setQ(e.target.value)} />
         </div>
+        <button className="btn sm" style={{ marginInlineStart: 8 }} onClick={onAdd}>
+          + قضية جديدة (مؤرشفة)
+        </button>
       </div>
       {archived.length === 0 ? (
         <div style={{ textAlign: "center", padding: 48 }}>

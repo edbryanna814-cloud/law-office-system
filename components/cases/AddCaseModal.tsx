@@ -9,10 +9,12 @@ export function AddCaseModal({
   onClose,
   onSave,
   edit,
+  startArchived,
 }: {
   onClose: () => void;
   onSave: (c: CaseData) => void;
   edit?: CaseData;
+  startArchived?: boolean;
 }) {
   const [f, setF] = useState({
     id: edit?.id ?? "",
@@ -36,8 +38,8 @@ export function AddCaseModal({
       client: f.client,
       court: f.court,
       type: f.type as CaseData["type"],
-      status: edit?.status ?? "نشطة",
-      archived: edit?.archived,
+      status: edit?.status ?? (startArchived ? "مغلقة" : "نشطة"),
+      archived: startArchived ?? edit?.archived,
       next: f.next || f.date || "—",
       value: f.value ? Number(f.value).toLocaleString("en-US") : "0",
     });
