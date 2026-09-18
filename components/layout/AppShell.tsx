@@ -154,6 +154,34 @@ export function AppShell() {
     setMenu(false);
   };
 
+  // اسحب من حافة الشاشة تفتح، وسحب لليمين يقفل (موبايل بس)
+  useEffect(() => {
+    let sx: number | null = null;
+    const onStart = (e: TouchEvent) => {
+      sx = e.touches[0].clientX;
+    };
+    const onEnd = (e: TouchEvent) => {
+      if (sx === null) return;
+      const dx = e.changedTouches[0].clientX - sx;
+      const vw = window.innerWidth;
+      const edge = sx >= vw * 0.85;
+      if (Math.abs(dx) >= 50) {
+        setMenu((m) => {
+          if (!m && edge && dx < 0) return true;
+          if (m && dx > 0) return false;
+          return m;
+        });
+      }
+      sx = null;
+    };
+    document.addEventListener("touchstart", onStart, { passive: true });
+    document.addEventListener("touchend", onEnd, { passive: true });
+    return () => {
+      document.removeEventListener("touchstart", onStart);
+      document.removeEventListener("touchend", onEnd);
+    };
+  }, []);
+
   const patch = useCallback(
     (key: "cases" | "sessions" | "staff" | "transactions" | "docs" | "templates", fn: (list: any[]) => any[]) =>
       setState((p) => ({ ...p, [key]: fn(p[key]) })),
@@ -327,6 +355,7 @@ export function AppShell() {
         onNavigate={go}
         onNewCase={() => setModal({ kind: "case" })}
         onLogout={logout}
+        onClose={() => setMenu(false)}
       />
       <div className={"main" + (menu ? " toggled" : "")}>
         <Topbar

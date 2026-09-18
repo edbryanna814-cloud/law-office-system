@@ -24,6 +24,7 @@ export function Sidebar({
   onNavigate,
   onNewCase,
   onLogout,
+  onClose,
 }: {
   active: TabKey;
   detailOpen: boolean;
@@ -32,10 +33,14 @@ export function Sidebar({
   onNavigate: (k: TabKey) => void;
   onNewCase: () => void;
   onLogout: () => void;
+  onClose: () => void;
 }) {
   const items = NAV.filter((n) => pages.includes(n.k));
   return (
     <aside className={"side" + (menuOpen ? " toggled" : "")}>
+      <button className="side-close icon-btn" onClick={onClose} aria-label="إغلاق القائمة">
+        <Ico d={I.x} size={16} />
+      </button>
       <div className="brand">
         <span className="brand-mark" style={{ color: "#63A8FF" }}>
           <Scales size={20} />
