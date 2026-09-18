@@ -43,12 +43,12 @@ export function EmployeesTab({
         <table>
           <thead>
             <tr>
-              <th>الاسم</th>
+              <th style={{ width: "28%" }}>الاسم</th>
               <th>الوظيفة</th>
               <th>الكود</th>
               <th>القضايا المسندة</th>
-              <th></th>
-              <th></th>
+              <th>تواصل</th>
+              <th>إجراءات</th>
             </tr>
           </thead>
           <tbody>
@@ -62,9 +62,9 @@ export function EmployeesTab({
                     <b style={{ fontWeight: 600 }}>{s.n ?? "-"}</b>
                   </span>
                 </td>
-                <td className="muted">{s.r}</td>
-                <td>{s.id}</td>
-                <td>
+                <td className="muted" style={{ whiteSpace: "nowrap" }}>{s.r}</td>
+                <td style={{ whiteSpace: "nowrap" }}>{s.id}</td>
+                <td style={{ whiteSpace: "nowrap" }}>
                   <span className="pill blue">{s.cases}</span>
                 </td>
                 <td>
