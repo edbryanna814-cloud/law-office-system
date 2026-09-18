@@ -217,7 +217,7 @@ export function AppShell() {
     fetch(`/api/data/sessions?id=${encodeURIComponent(id)}`, { method: "DELETE" });
   };
   const postponeSession = (s: SessionData, date: string) => {
-    editSession({ ...s, d: date });
+    editSession({ ...s, d: date, tone: "gold" });
     const c = state.cases.find((x) => x.id === s.c);
     if (c) editCase({ ...c, next: date, status: "مؤجلة" });
   };
