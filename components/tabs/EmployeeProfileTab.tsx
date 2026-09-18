@@ -4,6 +4,13 @@ import { I, Ico } from "@/components/ui/icons";
 import { fmtSessionDate, fmtSessionTime } from "@/lib/format";
 import type { CaseData, EmployeeData, SessionData, TransactionData } from "@/types";
 
+const waLink = (phone: string) => {
+  const d = (phone || "").replace(/\D/g, "");
+  if (!d) return "";
+  const num = d.startsWith("20") ? d : "20" + d.replace(/^0+/, "");
+  return "https://wa.me/" + num;
+};
+
 export function EmployeeProfileTab({
   p,
   cases,
@@ -51,18 +58,20 @@ export function EmployeeProfileTab({
           </div>
           <div style={{ height: 1, background: "linear-gradient(90deg,transparent,rgba(46,139,255,.6),transparent)", margin: "18px 0" }} />
           <div className="row" style={{ gap: 10, flexWrap: "wrap" }}>
-            <a className="btn ghost sm" href={"tel:" + p.phone.replace(/ /g, "")}>
+            <a className="btn ghost sm" href={"tel:" + p.phone.replace(/[^\d+]/g, "")}>
               <span className="row" style={{ gap: 7 }}>
                 <Ico d={I.phone} size={15} />
                 اتصال
               </span>
             </a>
-            <a className="btn ghost sm" href={"mailto:" + p.mail}>
-              <span className="row" style={{ gap: 7 }}>
-                <Ico d={I.chat} size={15} />
-                مراسلة
-              </span>
-            </a>
+            {waLink(p.phone) && (
+              <a className="btn ghost sm" href={waLink(p.phone)} target="_blank" rel="noreferrer">
+                <span className="row" style={{ gap: 7 }}>
+                  <Ico d={I.chat} size={15} />
+                  واتساب
+                </span>
+              </a>
+            )}
             <span className="pill teal">{mySessions.length ? "عنده جلسات مكلف بيها" : "متاح"}</span>
           </div>
         </div>
