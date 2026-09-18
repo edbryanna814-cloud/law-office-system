@@ -91,6 +91,7 @@ button{cursor:pointer;border:0;background:none}
 .card.glow{box-shadow:var(--glow);border-color:transparent}
 .card h3{margin:0 0 14px;font-size:15px;font-weight:600}
 .grid{display:grid;gap:16px}
+.dash-charts{grid-template-columns:1.3fr 1fr 1fr}
 .muted{color:var(--muted)}
 .row{display:flex;align-items:center;gap:10px}
 
@@ -186,5 +187,6 @@ tbody tr:hover{background:rgba(125,155,205,.05);cursor:pointer}
   .main{margin-inline-start:0;transition:none}
   .content{padding:18px}
   .topbar{padding:14px 16px}
+  .dash-charts{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

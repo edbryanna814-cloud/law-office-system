@@ -56,7 +56,7 @@ export function DashboardTab({
         <Stat label="رصيد العهدة" value={fmt(balance) + " ج"} foot={"محصّل " + fmt(income)} tone="gold" />
       </div>
 
-      <div className="grid" style={{ gridTemplateColumns: "1.3fr 1fr 1fr" }}>
+      <div className="grid dash-charts">
         <div className="card">
           <h3>الجلسات شهريًا (آخر ٨ أشهر)</h3>
           <svg viewBox="0 0 340 150" style={{ width: "100%", height: 170 }}>
@@ -85,7 +85,7 @@ export function DashboardTab({
 
         <div className="card">
           <h3>توزيع أنواع القضايا النشطة</h3>
-          <div className="row" style={{ gap: 18 }}>
+          <div className="row" style={{ gap: 18, flexWrap: "wrap" }}>
             <svg viewBox="0 0 100 100" width="118" height="118">
               <circle cx="50" cy="50" r="36" fill="none" stroke="#1A2337" strokeWidth="14" />
               {byType.map((d, i) => {
