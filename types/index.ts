@@ -45,6 +45,7 @@ export interface TransactionData {
   amt: number;
   date: string;
   dir: TxDirection;
+  cat: string;
   who?: string;
 }
 

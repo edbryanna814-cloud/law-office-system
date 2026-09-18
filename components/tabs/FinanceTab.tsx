@@ -25,6 +25,8 @@ export function FinanceTab({
   const pct = Math.min(100, Math.round((spent / Math.max(income, 1)) * 100));
   const fmt = (n?: number) => (n ?? 0).toLocaleString("ar-EG");
   const totalCases = cases.length;
+  const catLabel = (t: TransactionData) =>
+    t.cat === "cust" ? "عهدة موظف" : t.cat === "vault" ? "الخزانة" : t.cat === "fees" ? "أتعاب قضية" : t.cat || (t.who ? "عهدة موظف" : "الخزانة");
 
   return (
     <>
@@ -36,6 +38,7 @@ export function FinanceTab({
               <thead>
                 <tr>
                   <th>البيان</th>
+                  <th>التصنيف</th>
                   <th>النوع</th>
                   <th>المبلغ</th>
                   <th>التاريخ</th>
@@ -46,6 +49,9 @@ export function FinanceTab({
                 {list.map((t) => (
                   <tr key={t.id}>
                     <td>{t.d}</td>
+                    <td>
+                      <span className="pill">{catLabel(t)}</span>
+                    </td>
                     <td>
                       <span className={"pill " + (t.dir === "in" ? "teal" : "red")}>{t.t}</span>
                     </td>
@@ -67,7 +73,7 @@ export function FinanceTab({
                 ))}
                 {!list.length && (
                   <tr>
-                    <td colSpan={5} className="muted" style={{ textAlign: "center", padding: 24 }}>
+                    <td colSpan={6} className="muted" style={{ textAlign: "center", padding: 24 }}>
                       مفيش عمليات بعد. سجّل أول عملية.
                     </td>
                   </tr>
