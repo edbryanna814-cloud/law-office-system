@@ -4,6 +4,13 @@ import { useState } from "react";
 import { I, Ico } from "@/components/ui/icons";
 import type { EmployeeData } from "@/types";
 
+const waLink = (phone: string) => {
+  const d = (phone || "").replace(/\D/g, "");
+  if (!d) return "";
+  const num = d.startsWith("20") ? d : "20" + d.replace(/^0+/, "");
+  return "https://wa.me/" + num;
+};
+
 export function EmployeesTab({
   list,
   onOpen,
@@ -40,8 +47,7 @@ export function EmployeesTab({
               <th>الوظيفة</th>
               <th>الكود</th>
               <th>القضايا المسندة</th>
-              <th>الهاتف</th>
-              <th>البريد</th>
+              <th></th>
               <th></th>
             </tr>
           </thead>
@@ -61,11 +67,31 @@ export function EmployeesTab({
                 <td>
                   <span className="pill blue">{s.cases}</span>
                 </td>
-                <td className="muted" dir="ltr" style={{ textAlign: "start" }}>
-                  {s.phone}
-                </td>
-                <td className="muted" dir="ltr" style={{ textAlign: "start" }}>
-                  {s.mail}
+                <td>
+                  <span className="row" style={{ gap: 4 }}>
+                    {s.phone && (
+                      <a
+                        className="icon-btn"
+                        href={"tel:" + s.phone.replace(/[^\d+]/g, "")}
+                        aria-label="اتصال"
+                        style={{ width: 28, height: 28, color: "#2DD4BF" }}
+                      >
+                        <Ico d={I.phone} size={14} />
+                      </a>
+                    )}
+                    {waLink(s.phone) && (
+                      <a
+                        className="icon-btn"
+                        href={waLink(s.phone)}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="واتساب"
+                        style={{ width: 28, height: 28, color: "#63A8FF" }}
+                      >
+                        <Ico d={I.chat} size={14} />
+                      </a>
+                    )}
+                  </span>
                 </td>
                 <td>
                   <span className="row" style={{ gap: 4 }}>
