@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { I, Ico } from "@/components/ui/icons";
-import type { DocKind, DocumentData, TemplateData } from "@/types";
+import type { CaseData, DocKind, DocumentData, TemplateData } from "@/types";
 import { splitDots, fillTemplate } from "@/lib/templates";
 
 const color = (k: DocKind) => (k === "pdf" ? "#63A8FF" : k === "doc" ? "#E3B34A" : "#2DD4BF");
@@ -22,6 +22,7 @@ const genId = () => "TPL-" + Date.now().toString(36) + "-" + Math.floor(Math.ran
 
 export function DocumentsTab({
   list,
+  cases,
   templates,
   onUpload,
   onLatex,
@@ -32,6 +33,7 @@ export function DocumentsTab({
   onDeleteTemplate,
 }: {
   list: DocumentData[];
+  cases: CaseData[];
   templates: TemplateData[];
   onUpload: (files: FileList | File[], caseId?: string) => void;
   onLatex: (name: string, latex: string, caseId?: string) => void;
@@ -44,6 +46,7 @@ export function DocumentsTab({
   const [hot, setHot] = useState(false);
   const [sel, setSel] = useState(0);
   const inp = useRef<HTMLInputElement>(null);
+  const [caseId, setCaseId] = useState("");
   const [tplId, setTplId] = useState(templates[0]?.id ?? "");
   const [vals, setVals] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
@@ -52,6 +55,13 @@ export function DocumentsTab({
   const [texModal, setTexModal] = useState(false);
   const [texName, setTexName] = useState("");
   const [texBody, setTexBody] = useState("");
+
+  useEffect(() => {
+    if (!caseId && cases.length) setCaseId(cases[0].id);
+  }, [cases, caseId]);
+
+  const attachCase = cases.find((c) => c.id === caseId);
+  const noCase = !attachCase;
 
   const tpl = templates.find((t) => t.id === tplId) ?? templates[0];
   const fields = tpl ? splitDots(tpl.body).filter((p) => p.kind === "dot") : [];
@@ -88,6 +98,15 @@ export function DocumentsTab({
       <div style={{ display: "grid", gap: 14 }}>
         <div className="card">
           <h3>رفع مستند</h3>
+          <label style={{ display: "block", fontSize: 12, fontWeight: 700, marginBottom: 5 }}>القضية المرتبطة</label>
+          <select className="input" value={caseId} disabled={!cases.length} onChange={(e) => setCaseId(e.target.value)}>
+            {cases.length === 0 && <option value="">مفيش قضايا — اعمل قضية الأول</option>}
+            {cases.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.id} — {c.title}
+              </option>
+            ))}
+          </select>
           <div
             className={"drop" + (hot ? " hot" : "")}
             onDragOver={(e) => {
@@ -98,7 +117,7 @@ export function DocumentsTab({
             onDrop={(e) => {
               e.preventDefault();
               setHot(false);
-              onUpload(e.dataTransfer.files, "");
+              if (!noCase) onUpload(e.dataTransfer.files, caseId);
             }}
           >
             <div style={{ color: "#63A8FF", display: "grid", placeItems: "center", marginBottom: 10 }}>
@@ -108,15 +127,15 @@ export function DocumentsTab({
             <div className="muted" style={{ fontSize: 12, marginTop: 6 }}>
               PDF أو Word أو صور — الملف الأصلي بيتحفظ نسخة احتياطية دايمًا، والنص بيتحول ل-LaTeX
             </div>
-            <button className="btn sm" style={{ marginTop: 14 }} onClick={() => inp.current?.click()}>
+            <button className="btn sm" style={{ marginTop: 14 }} disabled={noCase} onClick={() => inp.current?.click()}>
               اختيار من الجهاز
             </button>
-            <input ref={inp} type="file" multiple hidden accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onChange={(e) => { if (e.target.files) { onUpload(e.target.files, ""); e.target.value = ""; } }} />
+            <input ref={inp} type="file" multiple hidden accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onChange={(e) => { if (e.target.files) { if (!noCase) onUpload(e.target.files, caseId); e.target.value = ""; } }} />
           </div>
           <div className="muted" style={{ fontSize: 11.5, marginTop: 10, lineHeight: 1.7 }}>
             لو الـ OCR مقراش الملف، اكتبه بنفسك هنا:
           </div>
-          <button className="btn ghost sm" style={{ marginTop: 6 }} onClick={() => setTexModal(true)}>
+          <button className="btn ghost sm" style={{ marginTop: 6 }} disabled={noCase} onClick={() => setTexModal(true)}>
             رفع LaTeX يدويًا
           </button>
           <div className="row" style={{ justifyContent: "space-between", marginTop: 16, fontSize: 12.5 }}>
@@ -253,7 +272,7 @@ export function DocumentsTab({
                 className="btn sm"
                 disabled={!texBody.trim()}
                 onClick={() => {
-                  onLatex(texName.trim(), texBody, "");
+                  onLatex(texName.trim(), texBody, caseId);
                   setTexModal(false);
                   setTexName("");
                   setTexBody("");

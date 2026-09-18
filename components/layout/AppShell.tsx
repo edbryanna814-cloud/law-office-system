@@ -308,7 +308,7 @@ export function AppShell() {
   ) : cur === "finance" ? (
     <FinanceTab list={state.transactions} onAdd={addTx} onDelete={deleteTx} cases={state.cases} />
   ) : cur === "docs" ? (
-    <DocumentsTab list={state.docs} templates={state.templates} onUpload={uploadDocs} onLatex={uploadLatex} onDelete={deleteDoc} onEditTex={setTexDoc} onAddTemplate={addTemplate} onEditTemplate={editTemplate} onDeleteTemplate={deleteTemplate} />
+    <DocumentsTab list={state.docs} cases={state.cases} templates={state.templates} onUpload={uploadDocs} onLatex={uploadLatex} onDelete={deleteDoc} onEditTex={setTexDoc} onAddTemplate={addTemplate} onEditTemplate={editTemplate} onDeleteTemplate={deleteTemplate} />
   ) : cur === "search" ? (
     <SearchTab cases={state.cases} staff={state.staff} docs={state.docs} onOpen={setOpenCase} onOpenStaff={setOpenStaff} />
   ) : cur === "users" ? (

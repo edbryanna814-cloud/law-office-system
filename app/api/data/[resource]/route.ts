@@ -97,7 +97,6 @@ async function handleUpload(user: { id: string; name: string }, req: NextRequest
   const docs = db.collection("docs");
   const safeCase = sanitizeDir(caseId);
   const caseDir = join(BASE, safeCase || "_");
-  await mkdir(caseDir, { recursive: true });
 
   const saved = [];
 
@@ -145,6 +144,7 @@ async function handleUpload(user: { id: string; name: string }, req: NextRequest
       await ghUpload(p, buf, fileName);
       gh = p;
     } else {
+      await mkdir(caseDir, { recursive: true });
       await writeFile(join(caseDir, `${id}.${ext}`), buf);
     }
 
@@ -369,7 +369,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ reso
 
   if (resource === "users") {
     if (g.user.role !== "admin") return deny();
-    const id = req.nextUrl.searchParams.get("id");
+    const id = req.nextUrl.searchParams.get("id") ?? p?.id;
     if (!id) return NextResponse.json({ error: "معرف مفقود." }, { status: 400 });
     const { db } = await connectToDatabase();
     const users = db.collection("users");
@@ -388,7 +388,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ reso
       const cleanPages = (p.pages as string[]).filter((x) => PAGE_KEYS.includes(x as any));
       set.pages = cleanPages.length ? cleanPages : undefined;
     }
-    if (p.password !== undefined) {
+    if (p.password) {
       if (String(p.password).length < 6) return NextResponse.json({ error: "كلمة المرور قصيرة جدًا." }, { status: 400 });
       if (String(id) === g.user.id)
         return NextResponse.json({ error: "غيّر كلمة مرورك من الإعدادات." }, { status: 400 });
