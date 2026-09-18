@@ -69,10 +69,10 @@ export function EmployeesTab({
                 <td style={{ whiteSpace: "nowrap" }}>
                   <span className="pill blue">{s.cases}</span>
                 </td>
-                <td className="muted" dir="ltr" style={{ textAlign: "end", whiteSpace: "nowrap" }}>
+                <td className="muted" dir="rtl" style={{ textAlign: "end", whiteSpace: "nowrap" }}>
                   {s.phone}
                 </td>
-                <td className="muted" dir="ltr" style={{ textAlign: "end", whiteSpace: "nowrap" }}>
+                <td className="muted" dir="rtl" style={{ textAlign: "end", whiteSpace: "nowrap" }}>
                   {s.mail}
                 </td>
                 <td>
