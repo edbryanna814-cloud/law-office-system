@@ -2,19 +2,32 @@
 
 import { useEffect, useState } from "react";
 import { I, Ico, Scales } from "@/components/ui/icons";
+import { Modal } from "@/components/ui/shared";
 import { fmtSessionDate, fmtSessionTime } from "@/lib/format";
 import type { SessionData } from "@/types";
+
+// الشهر القادم نفس اليوم (لو اليوم مش موجود في الشهر الجديد نرجع لآخر يوم فيه).
+const dateISO = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const addMonth = (iso: string) => {
+  const d = new Date(iso + "T00:00:00");
+  const day = d.getDate();
+  d.setMonth(d.getMonth() + 1);
+  if (d.getDate() !== day) d.setDate(0);
+  return dateISO(d);
+};
 
 export function SessionsTab({
   list,
   onAdd,
   onEdit,
   onDelete,
+  onPostpone,
 }: {
   list: SessionData[];
   onAdd: () => void;
   onEdit: (s: SessionData) => void;
   onDelete: (id: string) => void;
+  onPostpone: (s: SessionData, date: string) => void;
 }) {
   const [sel, setSel] = useState(0);
   const [reminded, setReminded] = useState<Record<string, boolean>>(() => {
@@ -34,6 +47,15 @@ export function SessionsTab({
   };
 
   const [nErr, setNErr] = useState("");
+  const [post, setPost] = useState(false);
+  const [pd, setPd] = useState("");
+
+  const applyPostpone = (date: string) => {
+    if (!current || !date) return;
+    onPostpone(current, date);
+    setPost(false);
+    setPd("");
+  };
 
   const enableReminder = async (s: SessionData) => {
     setNErr("");
@@ -172,6 +194,9 @@ export function SessionsTab({
                 أضف لـ Google Calendar
               </a>
               <div className="row" style={{ gap: 8, marginTop: 10 }}>
+                <button className="btn" style={{ flex: 1 }} onClick={() => { setPd(""); setPost(true); }}>
+                  تأجيل الجلسة
+                </button>
                 <button className="btn ghost" style={{ flex: 1 }} onClick={() => onEdit(current)}>
                   تعديل
                 </button>
@@ -187,6 +212,35 @@ export function SessionsTab({
           )}
         </div>
       </div>
+
+      {post && current && (
+        <Modal onClose={() => setPost(false)}>
+          <div className="row" style={{ marginBottom: 18 }}>
+            <h3 style={{ margin: 0, fontSize: 18 }}>تأجيل الجلسة</h3>
+            <button className="icon-btn" style={{ marginInlineStart: "auto" }} onClick={() => setPost(false)} aria-label="إغلاق">
+              <Ico d={I.x} />
+            </button>
+          </div>
+          <p className="muted" style={{ fontSize: 12.5, marginTop: 0, lineHeight: 1.8 }}>
+            الجلسة الحالية: {fmtSessionDate(current.d)} — {current.t} (قضية {current.c})
+          </p>
+          <button className="btn block" style={{ marginBottom: 16 }} onClick={() => applyPostpone(addMonth(current.d))}>
+            تأجيل للشهر القادم — نفس اليوم ({fmtSessionDate(addMonth(current.d))})
+          </button>
+          <div className="field">
+            <label>أو اختر تاريخ التأجيل</label>
+            <input className="input" type="date" value={pd} onChange={(e) => setPd(e.target.value)} />
+          </div>
+          <div className="row" style={{ gap: 10, marginTop: 16 }}>
+            <button className="btn" style={{ flex: 1 }} disabled={!pd} onClick={() => applyPostpone(pd)}>
+              تأجيل للتاريخ المختار
+            </button>
+            <button className="btn ghost" onClick={() => setPost(false)}>
+              إلغاء
+            </button>
+          </div>
+        </Modal>
+      )}
     </>
   );
 }

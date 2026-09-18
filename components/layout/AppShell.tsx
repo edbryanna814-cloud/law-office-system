@@ -216,6 +216,11 @@ export function AppShell() {
     patch("sessions", (l) => l.filter((x) => x.id !== id));
     fetch(`/api/data/sessions?id=${encodeURIComponent(id)}`, { method: "DELETE" });
   };
+  const postponeSession = (s: SessionData, date: string) => {
+    editSession({ ...s, d: date });
+    const c = state.cases.find((x) => x.id === s.c);
+    if (c) editCase({ ...c, next: date, status: "مؤجلة" });
+  };
 
   // ---------- CRUD: موظفين ----------
   const addEmployee = (e: EmployeeData) => {
@@ -324,6 +329,7 @@ export function AppShell() {
       onAdd={() => setModal({ kind: "session" })}
       onEdit={(s) => setModal({ kind: "session", edit: s })}
       onDelete={deleteSession}
+      onPostpone={postponeSession}
     />
   ) : cur === "staff" ? (
     <EmployeesTab
