@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { I, Ico } from "@/components/ui/icons";
+import { Drop } from "@/components/ui/Drop";
 import type { CaseData, DocKind, DocumentData, TemplateData } from "@/types";
 import { splitDots, fillTemplate } from "@/lib/templates";
 
@@ -99,14 +100,13 @@ export function DocumentsTab({
         <div className="card">
           <h3>رفع مستند</h3>
           <label style={{ display: "block", fontSize: 12, fontWeight: 700, marginBottom: 5 }}>القضية المرتبطة</label>
-          <select className="input" value={caseId} disabled={!cases.length} onChange={(e) => setCaseId(e.target.value)}>
-            {cases.length === 0 && <option value="">مفيش قضايا — اعمل قضية الأول</option>}
-            {cases.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.id} — {c.title}
-              </option>
-            ))}
-          </select>
+          <Drop
+            value={caseId}
+            onChange={setCaseId}
+            disabled={!cases.length}
+            placeholder={cases.length ? "اختر القضية..." : "مفيش قضايا — اعمل قضية الأول"}
+            options={cases.map((c) => ({ value: c.id, label: c.id + " — " + c.title }))}
+          />
           <div
             className={"drop" + (hot ? " hot" : "")}
             onDragOver={(e) => {
@@ -148,13 +148,7 @@ export function DocumentsTab({
           <h3>إنشاء مستند من قالب</h3>
           {templates.length > 0 ? (
             <>
-              <select className="input" value={tplId} onChange={(e) => pickTpl(e.target.value)}>
-                {templates.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name}
-                  </option>
-                ))}
-              </select>
+              <Drop value={tplId} onChange={(v) => pickTpl(v)} options={templates.map((t) => ({ value: t.id, label: t.name }))} />
               <div className="muted" style={{ fontSize: 12, marginTop: 8, lineHeight: 1.8 }}>
                 {tpl?.desc}
               </div>

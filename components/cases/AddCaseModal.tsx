@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { I, Ico } from "@/components/ui/icons";
 import { Modal } from "@/components/ui/shared";
+import { Drop } from "@/components/ui/Drop";
 import type { CaseData } from "@/types";
 
 const COURTS = ["محكمة شمال القاهرة", "محكمة الجيزة", "محكمة العمل", "محكمة مصر الجديدة", "محكمة النقض", "محكمة الاستئناف"];
@@ -71,31 +72,22 @@ export function AddCaseModal({
         </div>
         <div className="field">
           <label>المحكمة</label>
-          <select
-            className="input"
+          <Drop
             value={COURTS.includes(f.court) ? f.court : "__other"}
-            onChange={(e) => set("court", e.target.value === "__other" ? "" : e.target.value)}
-          >
-            {COURTS.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-            <option value="__other">محكمة أخرى (اكتبها)...</option>
-          </select>
+            onChange={(v) => set("court", v === "__other" ? "" : v)}
+            options={[...COURTS.map((c) => ({ value: c, label: c })), { value: "__other", label: "محكمة أخرى (اكتبها)..." }]}
+          />
           {!COURTS.includes(f.court) && (
             <input className="input" style={{ marginTop: 8 }} placeholder="اكتب اسم المحكمة الجديدة" value={f.court} onChange={(e) => set("court", e.target.value)} />
           )}
         </div>
         <div className="field">
           <label>نوع القضية</label>
-          <select className="input" value={f.type} onChange={(e) => set("type", e.target.value)}>
-            <option>مدني</option>
-            <option>تجاري</option>
-            <option>عمالي</option>
-            <option>جنائي</option>
-            <option>عقاري</option>
-          </select>
+          <Drop
+            value={f.type}
+            onChange={(v) => set("type", v)}
+            options={["مدني", "تجاري", "عمالي", "جنائي", "عقاري"].map((x) => ({ value: x, label: x }))}
+          />
         </div>
         <div className="field">
           <label>الجلسة القادمة</label>

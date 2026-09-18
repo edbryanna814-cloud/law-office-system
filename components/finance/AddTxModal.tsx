@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { I, Ico } from "@/components/ui/icons";
 import { Modal } from "@/components/ui/shared";
+import { Drop } from "@/components/ui/Drop";
 import type { TransactionData } from "@/types";
 
 const fmtDate = (iso: string) =>
@@ -76,10 +77,14 @@ export function AddTxModal({
       </div>
       <div className="field" style={{ marginBottom: 14 }}>
         <label>النوع</label>
-        <select className="input" value={f.dir} onChange={(e) => set("dir", e.target.value)}>
-          <option value="in">تحصيل +</option>
-          <option value="out">مصروف −</option>
-        </select>
+        <Drop
+          value={f.dir}
+          onChange={(v) => set("dir", v)}
+          options={[
+            { value: "in", label: "تحصيل +" },
+            { value: "out", label: "مصروف −" },
+          ]}
+        />
       </div>
       <div className="field" style={{ marginBottom: 14 }}>
         <label>المبلغ (ج.م)</label>
@@ -88,14 +93,12 @@ export function AddTxModal({
       {f.cat === "cust" && (
         <div className="field">
           <label>الموظف</label>
-          <select className="input" value={f.who} onChange={(e) => set("who", e.target.value)}>
-            <option value="">اختر الموظف...</option>
-            {staff.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.n} — {s.id}
-              </option>
-            ))}
-          </select>
+          <Drop
+            value={f.who}
+            onChange={(v) => set("who", v)}
+            placeholder="اختر الموظف..."
+            options={staff.map((s) => ({ value: s.id, label: s.n + " — " + s.id }))}
+          />
         </div>
       )}
       <div className="row" style={{ gap: 10, marginTop: 18 }}>

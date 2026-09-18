@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { I, Ico } from "@/components/ui/icons";
 import { Modal } from "@/components/ui/shared";
+import { Drop } from "@/components/ui/Drop";
 import type { CaseData, EmployeeData, SessionData, SessionTone } from "@/types";
 
 const TONES: SessionTone[] = ["blue", "teal", "red", "gold"];
@@ -62,13 +63,7 @@ export function AddSessionModal({
         </div>
         <div className="field">
           <label>رقم القضية</label>
-          <select className="input" value={f.c} onChange={(e) => set("c", e.target.value)}>
-            {cases.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.id} — {c.title}
-              </option>
-            ))}
-          </select>
+          <Drop value={f.c} onChange={(v) => set("c", v)} options={cases.map((c) => ({ value: c.id, label: c.id + " — " + c.title }))} />
         </div>
         <div className="field">
           <label>الدائرة</label>
@@ -100,13 +95,7 @@ export function AddSessionModal({
         </div>
         <div className="field">
           <label>المحامي المكلف</label>
-          <select className="input" value={f.lawyer} onChange={(e) => set("lawyer", e.target.value)}>
-            {staff.map((s) => (
-              <option key={s.id} value={s.n}>
-                {s.n}
-              </option>
-            ))}
-          </select>
+          <Drop value={f.lawyer} onChange={(v) => set("lawyer", v)} options={staff.map((s) => ({ value: s.n, label: s.n }))} />
         </div>
       </div>
       <div className="row" style={{ gap: 10, marginTop: 18 }}>

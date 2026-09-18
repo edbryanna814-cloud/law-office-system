@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { I, Ico } from "@/components/ui/icons";
 import { Modal } from "@/components/ui/shared";
+import { Drop } from "@/components/ui/Drop";
 import type { EmployeeData } from "@/types";
 
 const ROLES = ["محامي مرافعات", "محامي أول", "باحث قانوني", "مسؤول أرشيف", "موظف إداري"];
@@ -53,13 +54,7 @@ export function AddEmployeeModal({
         </div>
         <div className="field">
           <label>الوظيفة</label>
-          <select className="input" value={f.r} onChange={(e) => set("r", e.target.value)}>
-            {ROLES.map((r) => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
+          <Drop value={f.r} onChange={(v) => set("r", v)} options={ROLES.map((r) => ({ value: r, label: r }))} />
         </div>
         <div className="field">
           <label>رقم الهاتف</label>
