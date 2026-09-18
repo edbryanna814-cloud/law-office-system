@@ -40,10 +40,10 @@ export function EmployeesTab({
         </button>
       </div>
       <div style={{ overflowX: "auto" }}>
-        <table>
+        <table className="fit-table">
           <thead>
             <tr>
-              <th style={{ width: "22%" }}>الاسم</th>
+              <th>الاسم</th>
               <th>الوظيفة</th>
               <th>الكود</th>
               <th>القضايا المسندة</th>

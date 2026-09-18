@@ -127,6 +127,8 @@ select.input option{background:#fff;color:#0D1423}
 .pill.gold{background:rgba(227,179,74,.13);color:var(--gold)}
 
 table{width:100%;border-collapse:collapse}
+.fit-table{width:auto}
+.fit-table th,.fit-table td{padding-inline:9px}
 th{font-size:12px;color:var(--muted);font-weight:500;text-align:start;padding:0 14px 12px}
 td{padding:14px;font-size:13.5px;border-top:1px solid var(--line)}
 tbody tr{transition:background .15s}
