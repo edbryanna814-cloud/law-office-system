@@ -5,6 +5,8 @@ import { I, Ico } from "@/components/ui/icons";
 import { Modal } from "@/components/ui/shared";
 import type { CaseData } from "@/types";
 
+const COURTS = ["محكمة شمال القاهرة", "محكمة الجيزة", "محكمة العمل", "محكمة مصر الجديدة", "محكمة النقض", "محكمة الاستئناف"];
+
 export function AddCaseModal({
   onClose,
   onSave,
@@ -69,15 +71,21 @@ export function AddCaseModal({
         </div>
         <div className="field">
           <label>المحكمة</label>
-          <input className="input" list="courts" value={f.court} onChange={(e) => set("court", e.target.value)} />
-          <datalist id="courts">
-            <option>محكمة شمال القاهرة</option>
-            <option>محكمة الجيزة</option>
-            <option>محكمة العمل</option>
-            <option>محكمة مصر الجديدة</option>
-            <option>محكمة النقض</option>
-            <option>محكمة الاستئناف</option>
-          </datalist>
+          <select
+            className="input"
+            value={COURTS.includes(f.court) ? f.court : "__other"}
+            onChange={(e) => set("court", e.target.value === "__other" ? "" : e.target.value)}
+          >
+            {COURTS.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+            <option value="__other">محكمة أخرى (اكتبها)...</option>
+          </select>
+          {!COURTS.includes(f.court) && (
+            <input className="input" style={{ marginTop: 8 }} placeholder="اكتب اسم المحكمة الجديدة" value={f.court} onChange={(e) => set("court", e.target.value)} />
+          )}
         </div>
         <div className="field">
           <label>نوع القضية</label>
