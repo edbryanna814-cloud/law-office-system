@@ -36,7 +36,7 @@ export function EmployeesTab({
         <table>
           <thead>
             <tr>
-              <th style={{ width: "100%" }}>الاسم</th>
+              <th>الاسم</th>
               <th>الوظيفة</th>
               <th>الكود</th>
               <th>القضايا المسندة</th>
