@@ -69,12 +69,15 @@ export function AddCaseModal({
         </div>
         <div className="field">
           <label>المحكمة</label>
-          <select className="input" value={f.court} onChange={(e) => set("court", e.target.value)}>
+          <input className="input" list="courts" value={f.court} onChange={(e) => set("court", e.target.value)} />
+          <datalist id="courts">
             <option>محكمة شمال القاهرة</option>
             <option>محكمة الجيزة</option>
             <option>محكمة العمل</option>
             <option>محكمة مصر الجديدة</option>
-          </select>
+            <option>محكمة النقض</option>
+            <option>محكمة الاستئناف</option>
+          </datalist>
         </div>
         <div className="field">
           <label>نوع القضية</label>
