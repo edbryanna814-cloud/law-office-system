@@ -4,18 +4,20 @@ import { useState } from "react";
 import { I, Ico } from "@/components/ui/icons";
 import { Stat } from "@/components/ui/shared";
 import { AddTxModal } from "@/components/finance/AddTxModal";
-import type { CaseData, TransactionData } from "@/types";
+import type { CaseData, EmployeeData, TransactionData } from "@/types";
 
 export function FinanceTab({
   list,
   onAdd,
   onDelete,
   cases,
+  staff,
 }: {
   list: TransactionData[];
   onAdd: (t: TransactionData) => void;
   onDelete: (id: string) => void;
   cases: CaseData[];
+  staff: EmployeeData[];
 }) {
   const [adding, setAdding] = useState<TransactionData | "new" | false>(false);
   const income = list.filter((t) => t.dir === "in").reduce((a, b) => a + b.amt, 0);
@@ -106,7 +108,7 @@ export function FinanceTab({
           </div>
         </div>
       </div>
-      {adding !== false && <AddTxModal edit={adding === "new" ? undefined : adding} onClose={() => setAdding(false)} onAdd={onAdd} />}
+      {adding !== false && <AddTxModal staff={staff} edit={adding === "new" ? undefined : adding} onClose={() => setAdding(false)} onAdd={onAdd} />}
     </>
   );
 }

@@ -8,8 +8,18 @@ import type { TransactionData } from "@/types";
 const fmtDate = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("ar-EG", { day: "numeric", month: "long" });
 
-export function AddTxModal({ onClose, onAdd, edit }: { onClose: () => void; onAdd: (t: TransactionData) => void; edit?: TransactionData }) {
-  const [f, setF] = useState({ d: edit?.d ?? "", amt: edit?.amt ? String(edit.amt) : "", dir: (edit?.dir ?? "in") as TransactionData["dir"] });
+export function AddTxModal({
+  onClose,
+  onAdd,
+  edit,
+  staff,
+}: {
+  onClose: () => void;
+  onAdd: (t: TransactionData) => void;
+  edit?: TransactionData;
+  staff: { id: string; n: string }[];
+}) {
+  const [f, setF] = useState({ d: edit?.d ?? "", amt: edit?.amt ? String(edit.amt) : "", dir: (edit?.dir ?? "in") as TransactionData["dir"], who: edit?.who ?? "" });
   const set = (k: keyof typeof f, v: string) => setF((p) => ({ ...p, [k]: v }));
   const ok = Boolean(f.d && f.amt && Number(f.amt) > 0);
 
@@ -22,6 +32,7 @@ export function AddTxModal({ onClose, onAdd, edit }: { onClose: () => void; onAd
       amt: Number(f.amt),
       date: new Date().toISOString().slice(0, 10),
       dir: f.dir,
+      who: f.who || undefined,
     });
     onClose();
   };
@@ -50,6 +61,17 @@ export function AddTxModal({ onClose, onAdd, edit }: { onClose: () => void; onAd
           <label>المبلغ (ج.م)</label>
           <input className="input" inputMode="numeric" placeholder="0" value={f.amt} onChange={(e) => set("amt", e.target.value)} />
         </div>
+      </div>
+      <div className="field" style={{ marginTop: 14 }}>
+        <label>على موظف (عهدة داخلية — اختياري)</label>
+        <select className="input" value={f.who} onChange={(e) => set("who", e.target.value)}>
+          <option value="">عام (مش على موظف)</option>
+          {staff.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.n} — {s.id}
+            </option>
+          ))}
+        </select>
       </div>
       <div className="row" style={{ gap: 10, marginTop: 18 }}>
         <button className="btn" style={{ flex: 1 }} disabled={!ok} onClick={save}>

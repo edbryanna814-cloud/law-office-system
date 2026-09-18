@@ -276,7 +276,7 @@ export function AppShell() {
   const body = openCase ? (
     <CaseDetailsTab c={openCase} docs={state.docs} sessions={state.sessions} onUpload={uploadDocs} onLatex={uploadLatex} onEditCase={editCase} onDelete={deleteDoc} onEditTex={setTexDoc} onBack={() => setOpenCase(null)} />
   ) : openStaff ? (
-    <EmployeeProfileTab p={openStaff} cases={state.cases} sessions={state.sessions} onBack={() => setOpenStaff(null)} onOpenCase={setOpenCase} />
+    <EmployeeProfileTab p={openStaff} cases={state.cases} sessions={state.sessions} txs={state.transactions} onBack={() => setOpenStaff(null)} onOpenCase={setOpenCase} />
   ) : cur === "dash" ? (
     <DashboardTab cases={state.cases} sessions={state.sessions} transactions={state.transactions} goSessions={() => go("sessions")} onOpenCase={setOpenCase} />
   ) : cur === "cases" ? (
@@ -306,7 +306,7 @@ export function AppShell() {
       onDelete={deleteEmployee}
     />
   ) : cur === "finance" ? (
-    <FinanceTab list={state.transactions} onAdd={addTx} onDelete={deleteTx} cases={state.cases} />
+    <FinanceTab list={state.transactions} onAdd={addTx} onDelete={deleteTx} cases={state.cases} staff={state.staff} />
   ) : cur === "docs" ? (
     <DocumentsTab list={state.docs} cases={state.cases} templates={state.templates} onUpload={uploadDocs} onLatex={uploadLatex} onDelete={deleteDoc} onEditTex={setTexDoc} onAddTemplate={addTemplate} onEditTemplate={editTemplate} onDeleteTemplate={deleteTemplate} />
   ) : cur === "search" ? (

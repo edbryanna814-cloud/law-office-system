@@ -2,24 +2,31 @@
 
 import { I, Ico } from "@/components/ui/icons";
 import { fmtSessionDate, fmtSessionTime } from "@/lib/format";
-import type { CaseData, EmployeeData, SessionData } from "@/types";
+import type { CaseData, EmployeeData, SessionData, TransactionData } from "@/types";
 
 export function EmployeeProfileTab({
   p,
   cases,
   sessions,
+  txs,
   onBack,
   onOpenCase,
 }: {
   p: EmployeeData;
   cases: CaseData[];
   sessions: SessionData[];
+  txs: TransactionData[];
   onBack: () => void;
   onOpenCase: (c: CaseData) => void;
 }) {
   const mySessions = sessions.filter((s) => s.lawyer === p.n).sort((a, b) => a.d.localeCompare(b.d));
   const myCases = cases.filter((c) => (c.title + c.client).includes(p.n)).slice(0, 3);
   const done = mySessions.length;
+  const myTx = txs.filter((t) => t.who === p.id);
+  const custIn = myTx.filter((t) => t.dir === "in").reduce((a, b) => a + b.amt, 0);
+  const custOut = myTx.filter((t) => t.dir === "out").reduce((a, b) => a + b.amt, 0);
+  const custLeft = custIn - custOut;
+  const fmt = (n: number) => n.toLocaleString("ar-EG") + " ج";
 
   return (
     <>
@@ -75,7 +82,30 @@ export function EmployeeProfileTab({
               <b style={{ fontSize: 20 }}>{done}</b>
             </div>
           </div>
+        <div className="card">
+          <h3>العهدة المالية</h3>
+          {myTx.length ? (
+            <>
+              <div className="row" style={{ justifyContent: "space-between", padding: "11px 2px", borderTop: "1px solid var(--line)", fontSize: 13 }}>
+                <span className="muted">استلم (خد)</span>
+                <b style={{ color: "var(--teal)" }}>{fmt(custIn)}</b>
+              </div>
+              <div className="row" style={{ justifyContent: "space-between", padding: "11px 2px", borderTop: "1px solid var(--line)", fontSize: 13 }}>
+                <span className="muted">أدى / مصروف</span>
+                <b style={{ color: "#FF8296" }}>− {fmt(custOut)}</b>
+              </div>
+              <div className="row" style={{ justifyContent: "space-between", padding: "11px 2px", borderTop: "1px solid var(--line)", fontSize: 13 }}>
+                <span className="muted">الباقي عنده</span>
+                <b style={{ color: custLeft < 0 ? "#FF8296" : "var(--teal)" }}>{fmt(custLeft)}</b>
+              </div>
+            </>
+          ) : (
+            <div className="muted" style={{ fontSize: 12.5, textAlign: "center", padding: 16 }}>
+              مفيش عهدة مالية مسجلة على الموظف ده.
+            </div>
+          )}
         </div>
+      </div>
       </div>
       <div className="grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
         <div className="card">

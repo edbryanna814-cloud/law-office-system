@@ -45,6 +45,7 @@ export interface TransactionData {
   amt: number;
   date: string;
   dir: TxDirection;
+  who?: string;
 }
 
 export type DocKind = "pdf" | "doc" | "img";
