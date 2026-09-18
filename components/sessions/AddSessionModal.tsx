@@ -6,7 +6,12 @@ import { Modal } from "@/components/ui/shared";
 import { Drop } from "@/components/ui/Drop";
 import type { CaseData, EmployeeData, SessionData, SessionTone } from "@/types";
 
-const TONES: SessionTone[] = ["blue", "teal", "red", "gold"];
+const TONES: { v: SessionTone; l: string }[] = [
+  { v: "blue", l: "نشطة" },
+  { v: "gold", l: "مؤجلة" },
+  { v: "red", l: "عاجلة" },
+  { v: "teal", l: "انعقدت" },
+];
 
 export function AddSessionModal({
   onClose,
@@ -78,17 +83,17 @@ export function AddSessionModal({
           <input className="input" type="time" value={f.h} onChange={(e) => set("h", e.target.value)} />
         </div>
         <div className="field" style={{ gridColumn: "1 / -1" }}>
-          <label>اللون المميز</label>
+          <label>حالة الجلسة</label>
           <div className="row" style={{ gap: 8 }}>
-            {TONES.map((tone) => (
+            {TONES.map((t) => (
               <button
-                key={tone}
-                className={"pill " + tone}
-                onClick={() => set("tone", tone)}
-                style={{ cursor: "pointer", boxShadow: f.tone === tone ? "var(--glow)" : undefined }}
+                key={t.v}
+                className={"pill " + t.v}
+                onClick={() => set("tone", t.v)}
+                style={{ cursor: "pointer", boxShadow: f.tone === t.v ? "var(--glow)" : undefined }}
               >
-                {f.tone === tone ? "✓ " : ""}
-                {tone}
+                {f.tone === t.v ? "✓ " : ""}
+                {t.l}
               </button>
             ))}
           </div>

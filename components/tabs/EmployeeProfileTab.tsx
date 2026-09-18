@@ -122,7 +122,7 @@ export function EmployeeProfileTab({
                       قضية {s.c} · {s.room} · {fmtSessionDate(s.d)} {fmtSessionTime(s.h)}
                     </span>
                   </span>
-                <span className={"pill " + s.tone}>{s.tone === "red" ? "عاجلة" : s.tone === "teal" ? "انعقدت" : "مقررة"}</span>
+                <span className={"pill " + s.tone}>{s.tone === "red" ? "عاجلة" : s.tone === "teal" ? "انعقدت" : s.tone === "gold" ? "مؤجلة" : "نشطة"}</span>
               </div>
             ))
           ) : (
