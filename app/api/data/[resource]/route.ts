@@ -88,6 +88,37 @@ async function guard() {
 
 const deny = () => NextResponse.json({ error: "غير مخوّل لهذا المورد." }, { status: 403 });
 
+// كل مستخدم بدور (غير الأدمن) يبقى موظف: سجل staff مرتبط بـ uid = معرّف المستخدم.
+const newEmpId = () => "EMP-" + String(Math.floor(1000 + Math.random() * 9000));
+
+async function staffRoleName(db: any, key?: string) {
+  if (!key || key === "admin") return ROLE_NAMES[key ?? ""] ?? key ?? "";
+  const r = await db.collection("roles").findOne({ key });
+  return (r?.name as string) ?? ROLE_NAMES[key] ?? key;
+}
+
+async function ensureStaff(db: any, user: any, createdBy: string) {
+  const uid = String(user._id);
+  const adm = user.role === "admin";
+  const r = await staffRoleName(db, user.role);
+  const found = await db.collection("staff").findOne({ uid });
+  if (found) {
+    await db.collection("staff").updateOne({ uid }, { $set: { n: user.name, r, adm } });
+    return;
+  }
+  await db.collection("staff").insertOne({
+    id: newEmpId(),
+    uid,
+    n: user.name,
+    r,
+    cases: 0,
+    phone: "",
+    mail: user.email ?? "",
+    adm,
+    _createdBy: createdBy,
+  });
+}
+
 async function handleUpload(user: { id: string; name: string }, req: NextRequest) {
   const form = await req.formData();
   const files = form.getAll("files") as File[];
@@ -259,11 +290,19 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ reso
   try {
     const { db } = await connectToDatabase();
     const out: Record<string, any[]> = {};
+    // مزامنة: كل المستخدمين (بما فيهم الأدمن) يظهرون كموظفين. سجل الأدمن لا يظهر لغير الأدمن.
+    if (g.pages.includes("staff")) {
+      const all = (await db.collection("users").find({}).toArray()) as any[];
+      for (const u of all) await ensureStaff(db, u, g.user.id);
+    }
+    const callerAdmin = g.user.role === "admin";
     await Promise.all(
       ENTITIES.map(async (e) => {
-        out[e] = g.pages.includes(ENTITY_PAGE[e])
+        let rows = g.pages.includes(ENTITY_PAGE[e])
           ? (await db.collection(e).find({}).toArray()).map(toPlain)
           : [];
+        if (e === "staff" && !callerAdmin) rows = rows.filter((s: any) => !s.adm);
+        out[e] = rows;
       })
     );
     return NextResponse.json(out);
@@ -299,7 +338,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ res
         return NextResponse.json({ error: "البريد الإلكتروني مسجّل من قبل." }, { status: 409 });
       }
       const role = data.role || "lawyer";
-      await users.insertOne({
+      const ins = await users.insertOne({
         name: String(data.name).trim(),
         email: emailNorm,
         password: await hashPassword(String(data.password)),
@@ -308,6 +347,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ res
         pages: pages?.length ? pages : undefined,
         createdAt: new Date(),
       });
+      await ensureStaff(db, { _id: ins.insertedId, name: String(data.name).trim(), role, email: emailNorm }, g.user.id);
       return NextResponse.json({ ok: true });
     } catch (e: any) {
       return NextResponse.json({ error: e?.message ?? "DB error" }, { status: 500 });
@@ -375,6 +415,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ reso
     const users = db.collection("users");
 
     const set: any = {};
+    if (p.name !== undefined) {
+      const nm = String(p.name).trim();
+      if (!nm) return NextResponse.json({ error: "اكتب الاسم." }, { status: 400 });
+      set.name = nm;
+    }
     if (p.role !== undefined) {
       if (!(await roleExists(p.role))) return NextResponse.json({ error: "دور غير معروف." }, { status: 400 });
       if (String(id) === g.user.id && p.role !== "admin")
@@ -408,6 +453,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ reso
 
     const res = await users.updateOne({ _id: new ObjectId(id) }, { $set: set });
     if (res.matchedCount === 0) return NextResponse.json({ error: "المستخدم غير موجود." }, { status: 404 });
+    // مزامنة سجل الموظف عند تغيّر الاسم أو الدور (الأدمن يتحوّل لسجل موظف مخفي عن غير الأدمن).
+    if (set.role !== undefined || set.name !== undefined) {
+      const u = (await users.findOne({ _id: new ObjectId(id) })) as any;
+      if (u) await ensureStaff(db, u, g.user.id);
+    }
     return NextResponse.json({ ok: true });
   }
 
@@ -467,6 +517,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ r
     const res = await db.collection("users").deleteOne({ _id: new ObjectId(id) });
     if (res.deletedCount === 0) return NextResponse.json({ error: "المستخدم غير موجود." }, { status: 404 });
     await db.collection("auth_sessions").deleteMany({ userId: String(id) });
+    await db.collection("staff").deleteOne({ uid: String(id) });
     return NextResponse.json({ ok: true });
   }
 
