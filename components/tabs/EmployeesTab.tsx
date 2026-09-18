@@ -4,13 +4,6 @@ import { useState } from "react";
 import { I, Ico } from "@/components/ui/icons";
 import type { EmployeeData } from "@/types";
 
-const waLink = (phone: string) => {
-  const d = (phone || "").replace(/\D/g, "");
-  if (!d) return "";
-  const num = d.startsWith("20") ? d : "20" + d.replace(/^0+/, "");
-  return "https://wa.me/" + num;
-};
-
 export function EmployeesTab({
   list,
   onOpen,
@@ -47,7 +40,8 @@ export function EmployeesTab({
               <th>الوظيفة</th>
               <th>الكود</th>
               <th>القضايا المسندة</th>
-              <th>التواصل</th>
+              <th>الهاتف</th>
+              <th>البريد</th>
               <th>إجراءات</th>
             </tr>
           </thead>
@@ -67,40 +61,8 @@ export function EmployeesTab({
                 <td style={{ whiteSpace: "nowrap" }}>
                   <span className="pill blue">{s.cases}</span>
                 </td>
-                <td>
-                  <div style={{ display: "grid", gap: 3, minWidth: 140 }}>
-                    <span dir="ltr" style={{ textAlign: "start", whiteSpace: "nowrap" }}>
-                      {s.phone ? s.phone : "—"}
-                    </span>
-                    <span dir="ltr" style={{ textAlign: "start", whiteSpace: "nowrap" }}>
-                      {s.mail ? s.mail : "—"}
-                    </span>
-                    <span className="row" style={{ gap: 4, marginTop: 2 }}>
-                      {s.phone && (
-                        <a
-                          className="icon-btn"
-                          href={"tel:" + s.phone.replace(/[^\d+]/g, "")}
-                          aria-label="اتصال"
-                          style={{ width: 26, height: 26, color: "#2DD4BF" }}
-                        >
-                          <Ico d={I.phone} size={13} />
-                        </a>
-                      )}
-                      {waLink(s.phone) && (
-                        <a
-                          className="icon-btn"
-                          href={waLink(s.phone)}
-                          target="_blank"
-                          rel="noreferrer"
-                          aria-label="واتساب"
-                          style={{ width: 26, height: 26, color: "#63A8FF" }}
-                        >
-                          <Ico d={I.chat} size={13} />
-                        </a>
-                      )}
-                    </span>
-                  </div>
-                </td>
+                <td className="muted" style={{ whiteSpace: "nowrap" }}>{s.phone}</td>
+                <td className="muted" style={{ whiteSpace: "nowrap" }}>{s.mail}</td>
                 <td>
                   <span className="row" style={{ gap: 4 }}>
                     <button className="icon-btn" onClick={() => onEdit(s)} aria-label="تعديل" style={{ width: 28, height: 28 }}>
