@@ -321,7 +321,7 @@ function UserForm({
         </div>
         <div className="field">
           <label>البريد الإلكتروني</label>
-          <input className="input" dir="ltr" value={f.email} disabled={!isNew} style={{ opacity: !isNew ? 0.6 : 1 }} placeholder="name@office.eg" />
+          <input className="input" dir="ltr" value={f.email} disabled={!isNew} onChange={(e) => set("email", e.target.value)} style={{ opacity: !isNew ? 0.6 : 1 }} placeholder="name@office.eg" />
         </div>
         <div className="field" style={{ gridColumn: "1 / -1" }}>
           <label>{isNew ? "كلمة المرور" : isMe ? "كلمة المرور (لا يمكن تغييرها بنفسك من هنا)" : "كلمة مرور جديدة (اختياري)"}</label>
